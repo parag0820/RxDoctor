@@ -1,4 +1,4 @@
-package com.rxdoctor
+package com.RxDoctor
 
 import android.app.Application
 import com.facebook.react.PackageList
