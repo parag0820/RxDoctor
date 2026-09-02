@@ -5,13 +5,13 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
-  SafeAreaView,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
-import globalStyles, {colorGlobal} from '../../utils/globalStyls';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useEffect, useState } from 'react';
+import globalStyles, { colorGlobal } from '../../utils/globalStyls';
 import SystemHeader from '../../components/SystemHeader';
-import {useIsFocused} from '@react-navigation/native';
-import {scale} from 'react-native-size-matters';
+import { useIsFocused } from '@react-navigation/native';
+import { scale } from 'react-native-size-matters';
 import Header from '../../components/Header';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // import {LocaleConfig} from 'react-native-calendars';
@@ -22,7 +22,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import BASE_URL from '../../utils/baseUrl';
 
-export default function Home({navigation}) {
+export default function Home({ navigation }) {
   const [appointmentData, setAppointmentData] = useState([]);
   const [reportData, setReportData] = useState([]);
   const [PrescriptionData, setPrescriptionData] = useState([]);
@@ -114,10 +114,10 @@ export default function Home({navigation}) {
   }, [isFocused]);
 
   const tabsButtonDetails = [
-    {id: '1', label: 'Date'},
-    {id: '2', label: 'Time'},
-    {id: '3', label: 'Today Appointment'},
-    {id: '4', label: 'Cancel Appointment'},
+    { id: '1', label: 'Date' },
+    { id: '2', label: 'Time' },
+    { id: '3', label: 'Today Appointment' },
+    { id: '4', label: 'Cancel Appointment' },
   ];
 
   /// falt data prop for appointment
@@ -131,24 +131,24 @@ export default function Home({navigation}) {
   const Pharma = PrescriptionData;
 
   const buttonRegular = [
-    {label: 'Today', key: 'today'},
-    {label: 'Upcoming', key: 'Upcoming'},
-    {label: 'History', key: 'See All'},
+    { label: 'Today', key: 'today' },
+    { label: 'Upcoming', key: 'Upcoming' },
+    { label: 'History', key: 'See All' },
   ];
   const buttonAppointment = [
-    {label: 'Today', key: 'today'},
-    {label: 'Upcoming', key: 'Upcoming'},
-    {label: 'History', key: 'See All'},
+    { label: 'Today', key: 'today' },
+    { label: 'Upcoming', key: 'Upcoming' },
+    { label: 'History', key: 'See All' },
   ];
 
   const buttonDiagnostic = [
-    {label: 'Today', key: 'today'},
-    {label: 'History', key: 'See All'},
+    { label: 'Today', key: 'today' },
+    { label: 'History', key: 'See All' },
   ];
 
   const buttonPrescription = [
-    {label: 'Today', key: 'today'},
-    {label: 'History', key: 'See All'},
+    { label: 'Today', key: 'today' },
+    { label: 'History', key: 'See All' },
   ];
 
   const sections = [
@@ -194,51 +194,7 @@ export default function Home({navigation}) {
         return 'black';
     }
   };
-  // date handler
 
-  // LocaleConfig.locales['en'] = {
-  //   monthNames: [
-  //     'January',
-  //     'February',
-  //     'March',
-  //     'April',
-  //     'May',
-  //     'June',
-  //     'July',
-  //     'August',
-  //     'September',
-  //     'October',
-  //     'November',
-  //     'December',
-  //   ],
-  //   monthNamesShort: [
-  //     'Jan.',
-  //     'Feb.',
-  //     'Mar.',
-  //     'Apr.',
-  //     'May.',
-  //     'Jun.',
-  //     'Jul.',
-  //     'Aug.',
-  //     'Sep.',
-  //     'Oct.',
-  //     'Nov.',
-  //     'Dec.',
-  //   ],
-  //   dayNames: [
-  //     'Sunday',
-  //     'Monday',
-  //     'Tuesday',
-  //     'Wednesday',
-  //     'Thursday',
-  //     'Friday',
-  //     'Saturday',
-  //   ],
-  //   dayNamesShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-  //   today: 'Today',
-  // };
-
-  // LocaleConfig.defaultLocale = 'en';
 
   const handleDateSelect = day => {
     setSelectedDate(day.dateString);
@@ -290,7 +246,7 @@ export default function Home({navigation}) {
           <View style={styles.iconView}>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('History', {type: 'message'});
+                navigation.navigate('History', { type: 'message' });
               }}
               style={{
                 alignSelf: 'flex-end',
@@ -307,7 +263,7 @@ export default function Home({navigation}) {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('History', {type: 'voicecall'});
+                navigation.navigate('History', { type: 'voicecall' });
               }}
               style={{
                 alignSelf: 'flex-end',
@@ -324,7 +280,7 @@ export default function Home({navigation}) {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('History', {type: 'videocall'});
+                navigation.navigate('History', { type: 'videocall' });
               }}
               style={{
                 alignSelf: 'flex-end',
@@ -339,23 +295,7 @@ export default function Home({navigation}) {
               />
               <Text style={globalStyles.inputHeading}>Video</Text>
             </TouchableOpacity>
-            {/* <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('BookAppointment');
-              }}
-              style={{
-                alignSelf: 'flex-end',
-                marginVertical: 10,
-                alignItems: 'center',
-              }}>
-              <AntDesign
-                style={styles.bellIcon}
-                name="calendar"
-                size={30}
-                color={colorGlobal.seaGreen}
-              />
-              <Text style={globalStyles.inputHeading}>Calendar</Text>
-            </TouchableOpacity> */}
+
           </View>
 
           <FlatList
@@ -363,72 +303,12 @@ export default function Home({navigation}) {
             keyExtractor={(item, index) => item.title + index}
             ListHeaderComponent={
               <View>
-                {/* <View style={styles.calenderContainer}> */}
                 <View>
-                  {/* <Text
-                    style={{
-                      fontSize: 18,
-                      alignSelf: 'center',
-                      fontWeight: 'bold',
-                      color: colorGlobal.black,
-                    }}>
-                    Calendar
-                  </Text> */}
+
                 </View>
-                {/* <Text
-                  style={{
-                    alignSelf: 'center',
-                    color: 'green',
-                    marginVertical: 10,
-                  }}>
-                  Booked Appointment is Highlighted with Green Color
-                </Text>
-                <Calendar
-                  style={{
-                    height: scale(300),
-                    width: scale(300),
-                    borderRadius: 10,
-                  }}
-                  theme={{
-                    backgroundColor: colorGlobal.lightWhite,
-                    calendarBackground: colorGlobal.lightWhite,
-                    selectedDayBackgroundColor: colorGlobal.themeColor,
-                    selectedDayTextColor: '#ffffff',
-                    todayTextColor: '#00adf5',
-                    dayTextColor: '#2d4150',
-                    textDisabledColor: '#d9e1e8',
-                    dotColor: '#00adf5',
-                    selectedDotColor: '#ffffff',
-                    arrowColor: colorGlobal.themeColor,
-                    disabledArrowColor: colorGlobal.themeColor,
-                    monthTextColor: 'black',
-                    indicatorColor: 'blue',
-                    textDayFontFamily: 'monospace',
-                    textMonthFontFamily: 'monospace',
-                    textDayHeaderFontFamily: 'monospace',
-                    textDayFontWeight: '300',
-                    textMonthFontWeight: 'bold',
-                    textDayHeaderFontWeight: '300',
-                    textDayFontSize: 16,
-                    textMonthFontSize: 16,
-                    textDayHeaderFontSize: 16,
-                  }}
-                  current={'2024-07-03'}
-                  onDayPress={handleDateSelect}
-                  markedDates={{
-                    '2024-07-03': {selected: true, selectedColor: 'green'},
-                    '2024-07-03': {selected: true, selectedColor: 'green'},
-                    '2024-07-03': {selected: true, selectedColor: 'green'},
-                    [selectedDate]: {
-                      selected: true,
-                      disableTouchEvent: true,
-                      selectedDotColor: 'orange',
-                    },
-                  }}
-                /> */}
               </View>
             }
-            renderItem={({item: section}) => (
+            renderItem={({ item: section }) => (
               <View key={section.title}>
                 <View style={styles.headerContainer}>
                   <SystemHeader
@@ -441,7 +321,7 @@ export default function Home({navigation}) {
                   horizontal
                   data={section.data}
                   keyExtractor={item => item._id}
-                  renderItem={({item}) => (
+                  renderItem={({ item }) => (
                     <TouchableOpacity
                       onPress={() => {
                         if (section.title === 'Appointment') {
@@ -504,10 +384,10 @@ export default function Home({navigation}) {
                                       item.status === 'Pending'
                                         ? 'orange'
                                         : item.status === 'Accept'
-                                        ? 'green'
-                                        : item.status === 'Reject'
-                                        ? 'red'
-                                        : '#000',
+                                          ? 'green'
+                                          : item.status === 'Reject'
+                                            ? 'red'
+                                            : '#000',
                                   },
                                 ]}>
                                 {` ${item.status}`}
@@ -559,10 +439,10 @@ export default function Home({navigation}) {
                                         item.status === 'Pending'
                                           ? 'orange'
                                           : item.status === 'Completed'
-                                          ? 'green'
-                                          : item.status === 'Reject'
-                                          ? 'red'
-                                          : '#000',
+                                            ? 'green'
+                                            : item.status === 'Reject'
+                                              ? 'red'
+                                              : '#000',
                                     },
                                   ]}>
                                   {item.status}
@@ -636,7 +516,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colorGlobal.lightWhite,
   },
-  imageView: {alignItems: 'center', alignSelf: 'center', marginTop: 20},
+  imageView: { alignItems: 'center', alignSelf: 'center', marginTop: 20 },
   chatImage: {
     width: 150,
     height: 150,
@@ -655,11 +535,11 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
     marginTop: scale(10),
-    borderColor: colorGlobal.black,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
     paddingHorizontal: scale(10),
     flexDirection: 'row',
     backgroundColor: colorGlobal.white,
-    elevation: 5,
   },
   searchImage: {
     width: 24,

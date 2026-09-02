@@ -4,9 +4,9 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  Image,
-  SafeAreaView,
+  Keyboard,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import React, {useState, useEffect, useRef} from 'react';
 import {scale, verticalScale, vs} from 'react-native-size-matters';
 import {useOtpVerify, getHash, startOtpListener} from 'react-native-otp-verify';

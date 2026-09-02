@@ -9,9 +9,9 @@ import {
   Image,
   Modal,
   TouchableOpacity,
-  SafeAreaView,
   ScrollView
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 // import ProfileSetting from '../../components/ProfileSetting';
 import Rating from '../../components/Rating';
 import api from '../../utils/api';
@@ -99,11 +99,11 @@ export default function Profile() {
       <View style={styles.innerView}>
         <Image
           style={styles.image}
-          source={{
-            uri: profileImage
-              ? `${BASE_URL}Images/${profileImage}`
-              : `https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-Image.png`,
-          }}
+          source={
+            profileImage
+              ? { uri: `${BASE_URL}Images/${profileImage}` }
+              : require('../../assets/profile.png')
+          }
         />
       </View>
       <Text style={styles.name}>

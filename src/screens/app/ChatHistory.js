@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, FlatList, ScrollView, SafeAreaView} from 'react-native';
+import {View, StyleSheet, FlatList, ScrollView} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {Text, Appbar} from 'react-native-paper';
 import api from '../../utils/api';
 import {colorGlobal} from '../../utils/globalStyls';

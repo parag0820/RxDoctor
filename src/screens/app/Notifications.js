@@ -10,8 +10,9 @@ import {
   View,
   TouchableOpacity,
   FlatList,
-  SafeAreaView,
+  ActivityIndicator,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import React, {useEffect, useState} from 'react';
 
 export default function Notification() {

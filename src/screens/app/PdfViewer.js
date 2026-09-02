@@ -1,7 +1,6 @@
 import RNPrint from 'react-native-print';
 import React, {useEffect, useState} from 'react';
 import {
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,

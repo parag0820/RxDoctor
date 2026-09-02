@@ -6,7 +6,7 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import {colorGlobal} from '../utils/GlobalStyles';
+import { colorGlobal } from '../utils/GlobalStyles';
 
 export default function SearchBar({
   placeholder,
@@ -39,7 +39,7 @@ export default function SearchBar({
 const styles = StyleSheet.create({
   root: {
     width: '90%',
-    height: 50,
+    height: 40,
     marginVertical: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',

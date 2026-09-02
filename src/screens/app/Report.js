@@ -7,8 +7,9 @@ import {
   Share,
   FlatList,
   Image,
-  SafeAreaView,
+  ActivityIndicator,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {scale, vs} from 'react-native-size-matters';
 import globalStyles, {colorGlobal} from '../../utils/globalStyls';

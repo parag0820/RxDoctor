@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -12,6 +11,7 @@ import {
   Platform,
   Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import RNPrint from 'react-native-print';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import api from '../../utils/api';

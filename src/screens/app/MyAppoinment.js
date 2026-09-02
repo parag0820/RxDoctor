@@ -4,10 +4,12 @@ import {
   StyleSheet,
   Image,
   FlatList,
-  Button,
   Alert,
+  ScrollView,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import globalStyles, {colorGlobal} from '../../utils/globalStyls';
 import {scale} from 'react-native-size-matters';
 import {useNavigation} from '@react-navigation/native';
@@ -25,6 +27,7 @@ export default function MyAppointment({route}) {
   const [errorMessage, setErrorMessage] = useState('');
   const [roomId, setRoomId] = useState('');
   const [doctorId, setDoctorId] = useState('');
+  const [imageError, setImageError] = useState(false);
   const [loading, setLoading] = useState(true);
   const id = route.params.id;
 
@@ -79,106 +82,124 @@ export default function MyAppointment({route}) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.personalDetailsView}>
-        <View style={globalStyles.profileImageView}>
-          <Image
-            style={globalStyles.profileImage}
-            source={{
-              uri: `${BASE_URL}Images/${DoctorDetails?.image}`,
-            }}
-          />
-        </View>
-        <View style={styles.innerView}>
-          <Text
-            style={styles.nameText}>{`Name: ${DoctorDetails.fullname}`}</Text>
-          <View style={globalStyles.spaceLine}></View>
-          <Text
-            style={[
-              styles.professionalDetailsText,
-            ]}>{`City : ${DoctorDetails.city}`}</Text>
+      {/* Premium Header Card */}
+      <View style={styles.headerCard}>
+        <Image
+          style={styles.profileImage}
+          source={
+            !imageError &&
+            DoctorDetails?.image &&
+            DoctorDetails.image !== 'undefined' &&
+            DoctorDetails.image !== 'null' &&
+            DoctorDetails.image.trim() !== ''
+              ? { uri: `${BASE_URL}Images/${DoctorDetails.image}` }
+              : require('../../assets/default_patient.png')
+          }
+          onError={() => setImageError(true)}
+        />
+        <View style={styles.headerInfo}>
+          <Text style={styles.headerName} numberOfLines={1}>
+            {DoctorDetails?.fullname || 'Unknown Patient'}
+          </Text>
+          <View style={styles.locationRow}>
+            <Ionicons name="location" size={14} color="#7F8C8D" />
+            <Text style={styles.headerCity} numberOfLines={1}>
+              {DoctorDetails?.city || 'Location not provided'}
+            </Text>
+          </View>
         </View>
       </View>
+
       <FlatList
         data={PatientDetails}
+        keyExtractor={(item, index) => index.toString()}
+        contentContainerStyle={styles.listContent}
         renderItem={({item}) => (
-          <View
-            style={{paddingHorizontal: scale(15), paddingVertical: scale(10)}}>
-            <Text style={styles.nameText}>Scheduled Appointment</Text>
-            <Text style={styles.professionalDetailsText}>
-              Date : {item.date}
-            </Text>
-            <Text style={styles.professionalDetailsText}>
-              Time : {item.time}
-            </Text>
-
-            <Text style={styles.nameText}>Patient Information</Text>
-            <Text style={styles.professionalDetailsText}>
-              {`Full Name :   ${item.fullName}`}
-            </Text>
-            <Text style={styles.professionalDetailsText}>
-              {`Age : ${item.age}`}
-            </Text>
-            <Text style={styles.professionalDetailsText}>
-              {'Gender       :  '}
-              {item.gender}
-            </Text>
-
-            <View style={{flexDirection: 'row'}}>
-              <View>
-                <Text style={styles.professionalDetailsText}>
-                  {`Appointment Type     : ${item.appointmentType} `}
-                </Text>
-                <Text style={styles.professionalDetailsText}>
-                  {`Disease     : ${item.aboutDiseases} `}
-                </Text>
+          <View style={styles.detailsCard}>
+            
+            {/* Schedule Section */}
+            <View style={styles.sectionHeader}>
+              <Ionicons name="calendar" size={18} color={colorGlobal.themeColor} />
+              <Text style={styles.sectionTitle}>Appointment Schedule</Text>
+            </View>
+            
+            <View style={styles.scheduleRow}>
+              <View style={styles.scheduleBox}>
+                <Text style={styles.scheduleLabel}>Date</Text>
+                <Text style={styles.scheduleValue}>{item.date}</Text>
               </View>
-              <View style={{paddingRight: 20}}>
-                <Text
-                  style={[
-                    styles.professionalDetailsText,
-                    {marginRight: 20, paddingRight: 20},
-                  ]}></Text>
+              <View style={styles.scheduleDivider} />
+              <View style={styles.scheduleBox}>
+                <Text style={styles.scheduleLabel}>Time</Text>
+                <Text style={styles.scheduleValue}>{item.time}</Text>
               </View>
             </View>
 
-            <IntegrationButton
-              onPress={() => {
-                const currentDate = moment().format('YYYY-MM-DD');
+            <View style={styles.divider} />
 
-                if (isButtonPressable(item)) {
-                  if (item.appointmentType === 'Chat') {
-                    navigation.navigate('ChatSIO', {
-                      roomId: roomId,
-                      patientId: PatientDetails[0]._id,
-                      doctorId: doctorId,
-                      patientName: PatientDetails[0].fullName,
-                    });
-                  } else if (item.appointmentType === 'Audio Call') {
-                    navigation.navigate('AgoraVoiceCall', {
-                      patientId: PatientDetails[0]._id,
-                      doctorId: doctorId,
-                      patientName: PatientDetails[0].fullName,
-                    });
-                  } else if (item.appointmentType === 'Video Call') {
-                    navigation.navigate('AgoraVideoCall', {
-                      patientId: PatientDetails[0]._id,
-                      doctorId: doctorId,
-                      patientName: PatientDetails[0].fullName,
-                    });
+            {/* Patient Info Section */}
+            <View style={styles.sectionHeader}>
+              <Ionicons name="person" size={18} color={colorGlobal.themeColor} />
+              <Text style={styles.sectionTitle}>Patient Information</Text>
+            </View>
+
+            <View style={styles.infoGrid}>
+              <View style={styles.infoItem}>
+                <Text style={styles.infoLabel}>Age</Text>
+                <Text style={styles.infoValue}>{item.age ? `${item.age} yrs` : 'N/A'}</Text>
+              </View>
+              <View style={styles.infoItem}>
+                <Text style={styles.infoLabel}>Gender</Text>
+                <Text style={styles.infoValue}>{item.gender || 'N/A'}</Text>
+              </View>
+              <View style={styles.infoItem}>
+                <Text style={styles.infoLabel}>Type</Text>
+                <Text style={styles.infoValue} numberOfLines={1}>{item.appointmentType}</Text>
+              </View>
+            </View>
+
+            <View style={styles.diseaseBox}>
+              <Text style={styles.infoLabel}>Disease / Issue</Text>
+              <Text style={styles.diseaseValue}>{item.aboutDiseases || 'Not specified'}</Text>
+            </View>
+
+            {/* Action Section */}
+            <View style={styles.actionContainer}>
+              <IntegrationButton
+                onPress={() => {
+                  if (isButtonPressable(item)) {
+                    if (item.appointmentType === 'Chat') {
+                      navigation.navigate('ChatSIO', {
+                        roomId: roomId,
+                        patientId: PatientDetails[0]._id,
+                        doctorId: doctorId,
+                        patientName: PatientDetails[0].fullName,
+                      });
+                    } else if (item.appointmentType === 'Audio Call') {
+                      navigation.navigate('AgoraVoiceCall', {
+                        patientId: PatientDetails[0]._id,
+                        doctorId: doctorId,
+                        patientName: PatientDetails[0].fullName,
+                      });
+                    } else if (item.appointmentType === 'Video Call') {
+                      navigation.navigate('AgoraVideoCall', {
+                        patientId: PatientDetails[0]._id,
+                        doctorId: doctorId,
+                        patientName: PatientDetails[0].fullName,
+                      });
+                    }
+                  } else {
+                    Alert.alert('Not Available', 'The appointment is not valid for this action yet.');
+                    setErrorMessage('The appointment is not valid for this action');
                   }
-                } else {
-                  Alert.alert('The appointment is not valid for this action.');
-                  setErrorMessage(
-                    'The appointment is not valid for this action',
-                  );
-                }
-              }}
-              label={`${item.appointmentType}`}
-              disabled={!isButtonPressable(item)}
-            />
-            {errorMessage ? (
-              <Text style={globalStyles.error}>{errorMessage}</Text>
-            ) : null}
+                }}
+                label={`Start ${item.appointmentType}`}
+                disabled={!isButtonPressable(item)}
+              />
+              {errorMessage ? (
+                <Text style={styles.errorText}>{errorMessage}</Text>
+              ) : null}
+            </View>
           </View>
         )}
       />
@@ -189,34 +210,174 @@ export default function MyAppointment({route}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colorGlobal.lightWhite,
+    backgroundColor: '#F4F7FA',
   },
   loadingContainer: {
     justifyContent: 'center',
+    alignItems: 'center',
   },
-  personalDetailsView: {
-    marginHorizontal: scale(15),
+  
+  // Header Card
+  headerCard: {
     flexDirection: 'row',
-    backgroundColor: colorGlobal.white,
-    borderRadius: 10,
-    elevation: 2,
-    marginVertical: scale(10),
-    overflow: 'hidden',
+    backgroundColor: '#FFF',
+    padding: 20,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#EBF0F3',
+    borderTopWidth: 0,
+    marginBottom: 10,
   },
-  innerView: {
+  profileImage: {
+    width: scale(65),
+    height: scale(65),
+    borderRadius: scale(20),
+    backgroundColor: '#F0F2F5',
+  },
+  headerInfo: {
+    flex: 1,
+    marginLeft: 15,
     justifyContent: 'center',
   },
-  nameText: {
+  headerName: {
     fontSize: scale(18),
-    color: colorGlobal.black,
-    fontWeight: 'bold',
-    paddingVertical: scale(5),
+    fontWeight: '800',
+    color: '#2C3E50',
+    marginBottom: 4,
   },
-  professionalDetailsText: {
-    color: colorGlobal.black,
+  locationRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  headerCity: {
     fontSize: scale(12),
+    color: '#7F8C8D',
+    marginLeft: 4,
     fontWeight: '500',
-    marginVertical: scale(2),
-    textAlign: 'left',
+  },
+
+  // Details List
+  listContent: {
+    padding: 15,
+    paddingBottom: 40,
+  },
+  detailsCard: {
+    backgroundColor: '#FFF',
+    borderRadius: 20,
+    padding: 15,
+    borderWidth: 1,
+    borderColor: '#EBF0F3',
+  },
+  
+  // Sections
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  sectionTitle: {
+    fontSize: scale(14),
+    fontWeight: '700',
+    color: '#2C3E50',
+    marginLeft: 8,
+  },
+  
+  // Schedule
+  scheduleRow: {
+    flexDirection: 'row',
+    backgroundColor: '#F8F9FA',
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#EBF0F3',
+  },
+  scheduleBox: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  scheduleDivider: {
+    width: 1,
+    height: 40,
+    backgroundColor: '#EBF0F3',
+    marginHorizontal: 10,
+  },
+  scheduleLabel: {
+    fontSize: scale(11),
+    color: '#95A5A6',
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    marginBottom: 4,
+  },
+  scheduleValue: {
+    fontSize: scale(14),
+    fontWeight: '700',
+    color: '#34495E',
+  },
+  
+  divider: {
+    height: 1,
+    backgroundColor: '#EBF0F3',
+    marginVertical: 12,
+  },
+  
+  // Patient Info
+
+  infoGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  infoItem: {
+    flex: 1,
+    backgroundColor: '#F8F9FA',
+    padding: 12,
+    borderRadius: 12,
+    marginHorizontal: 4,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#EBF0F3',
+  },
+  infoLabel: {
+    fontSize: scale(11),
+    color: '#95A5A6',
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    marginBottom: 4,
+  },
+  infoValue: {
+    fontSize: scale(13),
+    fontWeight: '700',
+    color: '#34495E',
+  },
+  
+  diseaseBox: {
+    backgroundColor: '#FFF5F5',
+    padding: 15,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#FFE3E3',
+    marginBottom: 20,
+  },
+  diseaseValue: {
+    fontSize: scale(14),
+    fontWeight: '600',
+    color: '#E74C3C',
+    marginTop: 4,
+  },
+  
+  // Actions
+  actionContainer: {
+    marginTop: 10,
+  },
+  errorText: {
+    color: '#E74C3C',
+    fontSize: scale(12),
+    textAlign: 'center',
+    marginTop: 10,
+    fontWeight: '500',
   },
 });

@@ -1,5 +1,5 @@
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -7,12 +7,12 @@ import {
   TouchableOpacity,
   Image,
   FlatList,
-  SafeAreaView,
 } from 'react-native';
-import {useNavigation, useRoute} from '@react-navigation/native';
-import {scale, verticalScale} from 'react-native-size-matters';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { scale, verticalScale } from 'react-native-size-matters';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {colorGlobal} from '../../utils/globalStyls';
+import { colorGlobal } from '../../utils/globalStyls';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../../utils/api';
 import BASE_URL from '../../utils/baseUrl';
@@ -43,9 +43,9 @@ export default function Appointment() {
   }, []);
 
   const buttons = [
-    {label: 'Upcoming', key: 'Accept'},
-    {label: 'History', key: 'Completed'},
-    {label: 'Cancelled', key: 'Reject'},
+    { label: 'Upcoming', key: 'Accept' },
+    { label: 'History', key: 'Completed' },
+    { label: 'Cancelled', key: 'Reject' },
   ];
 
   const filterData = () => {
@@ -66,20 +66,28 @@ export default function Appointment() {
     return 'person'; // Default for Clinic/In-person
   };
 
-  const renderAppointmentItem = ({item}) => {
-    const isSelected = selectedAppointments.includes(item._id);
-    const statusColor =
+  const AppointmentCard = ({ item, isSelected, selectedButton, toggleSelectAppointment, navigation }) => {
+    const [imageError, setImageError] = useState(false);
+
+    const statusBadgeStyle =
       item.status === 'Accept'
-        ? '#2E7D32'
+        ? styles.statusBadgeAccept
         : item.status === 'Reject'
-        ? '#D32F2F'
-        : '#F57C00';
+          ? styles.statusBadgeReject
+          : styles.statusBadgePending;
+
+    const statusTextStyle =
+      item.status === 'Accept'
+        ? styles.statusTextAccept
+        : item.status === 'Reject'
+          ? styles.statusTextReject
+          : styles.statusTextPending;
 
     return (
       <TouchableOpacity
         activeOpacity={0.8}
         style={[styles.card, isSelected && styles.selectedCard]}
-        onPress={() => navigation.navigate('MyAppointment', {id: item._id})}>
+        onPress={() => navigation.navigate('MyAppointment', { id: item._id })}>
         {selectedButton === 'Completed' && (
           <TouchableOpacity
             onPress={() => toggleSelectAppointment(item._id)}
@@ -96,13 +104,19 @@ export default function Appointment() {
           <View style={styles.imageWrapper}>
             <Image
               style={styles.image}
-              source={{uri: `${BASE_URL}Images/${item?.patientId?.image}`}}
+              source={
+                !imageError &&
+                item?.patientId?.image &&
+                item.patientId.image !== 'undefined' &&
+                item.patientId.image !== 'null' &&
+                item.patientId.image.trim() !== ''
+                  ? { uri: `${BASE_URL}Images/${item.patientId.image}` }
+                  : require('../../assets/default_patient.png')
+              }
+              onError={() => setImageError(true)}
             />
             <View
-              style={[
-                styles.typeIconBadge,
-                {backgroundColor: colorGlobal.themeColor},
-              ]}>
+              style={styles.typeIconBadge}>
               <Ionicons
                 name={getAppointmentIcon(item.appointmentType)}
                 size={12}
@@ -117,11 +131,8 @@ export default function Appointment() {
                 {item.fullName}
               </Text>
               <View
-                style={[
-                  styles.statusBadge,
-                  {backgroundColor: statusColor + '15'},
-                ]}>
-                <Text style={[styles.statusBadgeText, {color: statusColor}]}>
+                style={[styles.statusBadge, statusBadgeStyle]}>
+                <Text style={[styles.statusBadgeText, statusTextStyle]}>
                   {item.status === 'Accept' ? 'Upcoming' : item.status}
                 </Text>
               </View>
@@ -147,8 +158,21 @@ export default function Appointment() {
     );
   };
 
+  const renderAppointmentItem = ({ item }) => {
+    const isSelected = selectedAppointments.includes(item._id);
+    return (
+      <AppointmentCard 
+        item={item} 
+        isSelected={isSelected}
+        selectedButton={selectedButton}
+        toggleSelectAppointment={toggleSelectAppointment}
+        navigation={navigation}
+      />
+    );
+  };
+
   return (
-    <SafeAreaView style={styles.mainContainer}>
+    <SafeAreaView style={styles.mainContainer} edges={['top']}>
       {/* Premium Segmented Toggle */}
       <View style={styles.headerControl}>
         <View style={styles.segmentedControl}>
@@ -184,6 +208,7 @@ export default function Appointment() {
       )}
 
       <FlatList
+        style={styles.listBackground}
         data={filterData()}
         renderItem={renderAppointmentItem}
         keyExtractor={item => item._id}
@@ -218,13 +243,20 @@ export default function Appointment() {
 }
 
 const styles = StyleSheet.create({
-  mainContainer: {flex: 1, backgroundColor: '#F4F7FA'},
+  mainContainer: { flex: 1, backgroundColor: colorGlobal.white },
 
   // Segmented Control
-  headerControl: {backgroundColor: '#FFF', padding: 15, elevation: 2},
+  headerControl: {
+    backgroundColor: colorGlobal.themeColor,
+    padding: 15,
+    paddingBottom: 25,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    marginBottom: 5,
+  },
   segmentedControl: {
     flexDirection: 'row',
-    backgroundColor: '#F0F2F5',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     borderRadius: 12,
     padding: 4,
   },
@@ -236,15 +268,14 @@ const styles = StyleSheet.create({
   },
   activeTabButton: {
     backgroundColor: '#FFF',
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
+    borderWidth: 0,
   },
-  tabLabel: {fontSize: scale(12), fontWeight: '600', color: '#7F8C8D'},
-  activeTabLabel: {color: colorGlobal.themeColor},
+  tabLabel: { fontSize: scale(12), fontWeight: '600', color: 'rgba(255, 255, 255, 0.9)' },
+  activeTabLabel: { color: colorGlobal.themeColor },
 
   // Card UI
-  listContent: {padding: 15, paddingBottom: 100},
+  listBackground: { backgroundColor: '#F4F7FA' },
+  listContent: { padding: 15, paddingBottom: 100 },
   card: {
     backgroundColor: '#FFF',
     borderRadius: 16,
@@ -252,16 +283,15 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     borderWidth: 1,
     borderColor: '#EBF0F3',
-    elevation: 2,
   },
   selectedCard: {
     borderColor: colorGlobal.themeColor,
     backgroundColor: '#F0F9FF',
   },
-  cardContent: {flexDirection: 'row', alignItems: 'center'},
+  cardContent: { flexDirection: 'row', alignItems: 'center' },
 
-  imageWrapper: {position: 'relative'},
-  image: {width: scale(65), height: scale(65), borderRadius: 12},
+  imageWrapper: { position: 'relative' },
+  image: { width: scale(65), height: scale(65), borderRadius: 12 },
   typeIconBadge: {
     position: 'absolute',
     bottom: -4,
@@ -270,9 +300,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 2,
     borderColor: '#FFF',
+    backgroundColor: colorGlobal.themeColor,
   },
 
-  infoContainer: {flex: 1, marginLeft: 15},
+  infoContainer: { flex: 1, marginLeft: 15 },
   nameRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -285,16 +316,22 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  statusBadge: {paddingHorizontal: 8, paddingVertical: 2, borderRadius: 6},
+  statusBadge: { paddingHorizontal: 8, paddingVertical: 2, borderRadius: 6 },
+  statusBadgeAccept: { backgroundColor: '#2E7D3215' },
+  statusBadgeReject: { backgroundColor: '#D32F2F15' },
+  statusBadgePending: { backgroundColor: '#F57C0015' },
   statusBadgeText: {
     fontSize: scale(10),
     fontWeight: '700',
     textTransform: 'uppercase',
   },
+  statusTextAccept: { color: '#2E7D32' },
+  statusTextReject: { color: '#D32F2F' },
+  statusTextPending: { color: '#F57C00' },
 
-  typeText: {fontSize: scale(11), color: '#7F8C8D', marginVertical: 4},
+  typeText: { fontSize: scale(11), color: '#7F8C8D', marginVertical: 4 },
 
-  dateTimeRow: {flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 4},
+  dateTimeRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 4 },
   infoPill: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -320,10 +357,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 15,
     alignItems: 'center',
+    backgroundColor: '#F4F7FA',
   },
-  selectionNote: {fontSize: scale(11), color: '#95A5A6', fontStyle: 'italic'},
-  clearText: {color: '#E74C3C', fontWeight: '700'},
-  checkbox: {position: 'absolute', right: 8, top: 8, zIndex: 10},
+  selectionNote: { fontSize: scale(11), color: '#95A5A6', fontStyle: 'italic' },
+  clearText: { color: '#E74C3C', fontWeight: '700' },
+  checkbox: { position: 'absolute', right: 8, top: 8, zIndex: 10 },
 
   floatingSubmit: {
     position: 'absolute',
@@ -336,9 +374,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 15,
     borderRadius: 15,
-    elevation: 8,
     gap: 10,
   },
-  submitText: {color: '#FFF', fontSize: 16, fontWeight: '700'},
-  emptyText: {textAlign: 'center', marginTop: 50, color: '#BDC3C7'},
+  submitText: { color: '#FFF', fontSize: 16, fontWeight: '700' },
+  emptyText: { textAlign: 'center', marginTop: 50, color: '#BDC3C7' },
 });

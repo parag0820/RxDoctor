@@ -1,8 +1,8 @@
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
-import React, {useEffect} from 'react';
-import {useNavigation} from '@react-navigation/native';
-import {useDispatch, useSelector} from 'react-redux';
-import {fetchUserData, setField, updateProfile} from '../../redux/UserSlice';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import React, { useEffect } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUserData, setField, updateProfile } from '../../redux/UserSlice';
 import globalStyles from '../../utils/globalStyls';
 import Input from '../../components/Input';
 import NextButton from '../../components/NextButton';
@@ -60,31 +60,6 @@ export default function Other() {
       });
   };
 
-  // const professionalHandler = () => {
-  //   const userDetails = {
-  //     education,
-  //     specialization,
-  //     affiliations,
-  //     researchAndPublications,
-  //     hospital,
-  //     personalVisitFee: Number(personalVisitFee), // Convert to number
-  //     ratePerMinChatFee: Number(ratePerMinChatFee), // Convert to number
-  //     ratePerMinVoiceFee: Number(ratePerMinVoiceFee), // Convert to number
-  //     ratePerMinVideoCallFee: Number(ratePerMinVideoCallFee), // Convert to number
-  //   };
-  //   console.log('data', userDetails);
-
-  //   dispatch(updateProfile(userDetails))
-  //     .unwrap()
-  //     .then(response => {
-  //       showToastPic();
-  //       console.log('PROFESSIONAL', response);
-  //     })
-  //     .catch(error => {
-  //       console.log('Update Profile Error: ', error);
-  //     });
-  // };
-
   useEffect(() => {
     dispatch(fetchUserData());
   }, [dispatch]);
@@ -97,7 +72,7 @@ export default function Other() {
           <Input
             placeholder={'Interventional Cardiology'}
             onChangeText={txt =>
-              dispatch(setField({field: 'specialization', value: txt}))
+              dispatch(setField({ field: 'specialization', value: txt }))
             }
             value={specialization}
           />
@@ -107,7 +82,7 @@ export default function Other() {
           <Input
             placeholder={'Enter per minute charges '}
             onChangeText={txt =>
-              dispatch(setField({field: 'ratePerMinChatFee', value: txt}))
+              dispatch(setField({ field: 'ratePerMinChatFee', value: txt }))
             }
             value={ratePerMinChatFee.toString()}
           />
@@ -117,7 +92,7 @@ export default function Other() {
           <Input
             placeholder={'Enter per minute charges '}
             onChangeText={txt =>
-              dispatch(setField({field: 'ratePerMinVoiceFee', value: txt}))
+              dispatch(setField({ field: 'ratePerMinVoiceFee', value: txt }))
             }
             value={ratePerMinVoiceFee.toString()}
           />
@@ -127,7 +102,7 @@ export default function Other() {
           <Input
             placeholder={'Enter per minute charges '}
             onChangeText={txt =>
-              dispatch(setField({field: 'ratePerMinVideoCallFee', value: txt}))
+              dispatch(setField({ field: 'ratePerMinVideoCallFee', value: txt }))
             }
             value={ratePerMinVideoCallFee.toString()}
           />
@@ -137,7 +112,7 @@ export default function Other() {
           <Input
             placeholder={'Enter per minute charges '}
             onChangeText={txt =>
-              dispatch(setField({field: 'personalVisitFee', value: txt}))
+              dispatch(setField({ field: 'personalVisitFee', value: txt }))
             }
             value={personalVisitFee.toString()}
           />
@@ -145,7 +120,7 @@ export default function Other() {
           <Input
             placeholder={'MBBS'}
             onChangeText={txt =>
-              dispatch(setField({field: 'education', value: txt}))
+              dispatch(setField({ field: 'education', value: txt }))
             }
             value={education}
           />
@@ -154,7 +129,7 @@ export default function Other() {
           <Input
             placeholder={'Example: Indian Medical Association (IMA)'}
             onChangeText={txt =>
-              dispatch(setField({field: 'affiliations', value: txt}))
+              dispatch(setField({ field: 'affiliations', value: txt }))
             }
             value={affiliations}
           />
@@ -164,7 +139,7 @@ export default function Other() {
           <Input
             placeholder={'Like Published numerous research papers'}
             onChangeText={txt =>
-              dispatch(setField({field: 'researchAndPublications', value: txt}))
+              dispatch(setField({ field: 'researchAndPublications', value: txt }))
             }
             value={researchAndPublications}
           />
@@ -172,13 +147,13 @@ export default function Other() {
           <Input
             placeholder={'Enter Your Hospital Name'}
             onChangeText={txt =>
-              dispatch(setField({field: 'hospital', value: txt}))
+              dispatch(setField({ field: 'hospital', value: txt }))
             }
             value={hospital}
           />
         </View>
       </ScrollView>
-      <View style={{alignSelf: 'flex-end', marginVertical: 10}}>
+      <View style={{ alignSelf: 'flex-end', marginVertical: 10 }}>
         <NextButton onPress={professionalHandler} label={'UPDATE'} />
       </View>
     </View>
